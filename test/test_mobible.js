@@ -143,15 +143,33 @@ function CustomTester(custom_setup, custom_teardown) {
 }
 
 describe("test_ussd_states_for_session_1", function() {
-    it("new users should see the start state", function () {
-        check_state(null, null, "start",
-            "^Welcome to mobible!");
+    it("new users should see the language state", function () {
+        check_state(null, null, "language",
+            "^Please select your language:[^]" +
+            "1. English[^]" +
+            "2. Afrikaans[^]" +
+            "3. Xhosa[^]" +
+            "4. Sotho$");
     });
 
-    it("returning users should see the end state", function() {
-        check_state({current_state: "start"}, "hi there!", "end",
+    it("returning afrikaans users should see the afrikaans_end",
+       function() {
+         check_state({current_state: "language"}, "2", "afrikaans_end",
+            "Baie dankie!");
+    });
+
+    it("returning non-afrikaans users should see the generic_end",
+       function() {
+         check_state({current_state: "language"}, "3", "generic_end",
             "Cheers!");
     });
+
+    it("invalid languages should repeat the state",
+       function() {
+         check_state({current_state: "language"}, "500", "language",
+            "^Please select your language");
+    });
+
 
     // it("reply 'title' to report_title should go to description", function() {
     //     check_state({current_state: "report_title"}, "the title",
