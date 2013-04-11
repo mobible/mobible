@@ -152,23 +152,36 @@ describe("test_ussd_states_for_session_1", function() {
             "4. Sotho$");
     });
 
-    it("returning afrikaans users should see the afrikaans_end",
+    it("returning users should see the discovery_journey",
        function() {
-         check_state({current_state: "language"}, "2", "afrikaans_end",
-            "Baie dankie!");
+         check_state({current_state: "language"}, "2", "discovery_journey",
+            "^Ask everyone");
     });
 
-    it("returning non-afrikaans users should see the generic_end",
-       function() {
-         check_state({current_state: "language"}, "3", "generic_end",
-            "Cheers!");
-    });
+    // it("returning non-afrikaans users should see the generic_end",
+    //    function() {
+    //      check_state({current_state: "language"}, "3", "discovery_journey",
+    //         "Cheers!");
+    // });
 
     it("invalid languages should repeat the state",
        function() {
          check_state({current_state: "language"}, "500", "language",
             "^Please select your language");
     });
+
+    it("returning users should see the greatest_need",
+       function() {
+         check_state({current_state: "discovery_journey"}, "eh?", "greatest_need",
+            "^Ask everyone");
+       });
+
+    it("returning users should see the prayer",
+       function() {
+         check_state({current_state: "greatest_need"}, "eh?", "prayer",
+            "^Please take a few");
+       });
+
 
 
     // it("reply 'title' to report_title should go to description", function() {
