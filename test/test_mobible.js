@@ -81,67 +81,6 @@ function check_state(user, content, next_state, expected_response, setup,
     maybe_call(teardown, this, [api, saved_user]);
 }
 
-function check_close(user, next_state, setup, teardown) {
-    var api = fresh_api();
-    var from_addr = "1234567";
-    var user_key = "users." + from_addr;
-    api.kv_store[user_key] = user;
-
-    maybe_call(setup, this, [api]);
-
-    // send message
-    api.on_inbound_message({
-        cmd: "inbound-message",
-        msg: {
-            from_addr: from_addr,
-            session_event: "close",
-            content: "User Timeout",
-            message_id: "123"
-        }
-    });
-
-    // check result
-    var saved_user = api.kv_store[user_key];
-    assert.equal(saved_user.current_state, next_state);
-    assert.deepEqual(app.api.request_calls, []);
-    assert.equal(app.api.done_calls, 1);
-
-    maybe_call(teardown, this, [api, saved_user]);
-}
-
-function CustomTester(custom_setup, custom_teardown) {
-    var self = this;
-
-    self._combine_setup = function(custom_setup, orig_setup) {
-        var combined_setup = function (api) {
-            maybe_call(custom_setup, self, [api]);
-            maybe_call(orig_setup, this, [api]);
-        };
-        return combined_setup;
-    };
-
-    self._combine_teardown = function(custom_teardown, orig_teardown) {
-        var combined_teardown = function (api, saved_user) {
-            maybe_call(custom_teardown, self, [api, saved_user]);
-            maybe_call(orig_teardown, this, [api, saved_user]);
-        };
-        return combined_teardown;
-    };
-
-    self.check_state = function(user, content, next_state, expected_response,
-                                setup, teardown) {
-        return check_state(user, content, next_state, expected_response,
-                           self._combine_setup(custom_setup, setup),
-                           self._combine_teardown(custom_teardown, teardown));
-    };
-
-    self.check_close = function(user, next_state, setup, teardown) {
-        return check_close(user, next_state,
-                           self._combine_setup(custom_setup, setup),
-                           self._combine_teardown(custom_teardown, teardown));
-    };
-}
-
 describe("test_ussd_states_for_session_1", function() {
     it("new users should see the language state", function () {
         check_state(null, null, "language",
