@@ -91,10 +91,10 @@ describe("test_ussd_states_for_session_1", function() {
             "4. Sotho$");
     });
 
-    it("returning users should see the discovery_journey",
+    it("returning users should see the select_discovery_journey",
        function() {
-         check_state({current_state: "language"}, "2", "discovery_journey",
-            "^Ask everyone");
+         check_state({current_state: "language"}, "2", "select_discovery_journey",
+            "^Select your");
     });
 
     // it("returning non-afrikaans users should see the generic_end",
@@ -104,16 +104,22 @@ describe("test_ussd_states_for_session_1", function() {
     // });
 
     it("invalid languages should repeat the state",
-       function() {
+        function() {
          check_state({current_state: "language"}, "500", "language",
             "^Please select your language");
     });
 
+    it("returning users should see thankfulness",
+        function() {
+            check_state({current_state: "select_discovery_journey"}, "1", 
+                "thankfulness", "^Ask everyone");
+    });
+
     it("returning users should see the greatest_need",
        function() {
-         check_state({current_state: "discovery_journey"}, "eh?", "greatest_need",
-            "^Ask everyone");
-       });
+         check_state({current_state: "thankfulness"}, "eh?", "greatest_need",
+            "^Ask everyone to share their");
+    });
 
     it("returning users should see the prayer",
        function() {
