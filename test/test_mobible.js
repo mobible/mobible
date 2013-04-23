@@ -266,7 +266,7 @@ describe("test_ussd_states_for_session_1", function() {
 
     it('replying yes to forwarding gives option to type numbers', function() {
         tester.check_state({current_state: 'discovery_journey1_commit'}, '1',
-            'share_via_sms', '^Please type in the phone numbers');
+            'share_via_sms', '^Please type in the phone number');
     });
 
     it('should forward the story via SMS if asked to do so', function() {
@@ -275,10 +275,22 @@ describe("test_ussd_states_for_session_1", function() {
         };
         tester.check_state(user_data,
             '27761234567',
-            'end',
-            '^Thanks for doing this DBS,',
+            'shared',
+            '^The SMS has been sent,',
             null,
-            assert_single_sms('27761234567', '^In the beginning'));
+            assert_single_sms('27761234567', '^In the beginning')
+            );
+    });
+
+    it('should end when done with sharing', function() {
+        var user_data = {
+            current_state: 'shared'
+        };
+        tester.check_state(user_data,
+            '2',
+            'end',
+            '^Thanks for doing this DBS,'
+        );
     });
 
     it('replying no to forwarding closes the session', function() {
