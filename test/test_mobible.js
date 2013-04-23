@@ -192,6 +192,16 @@ describe("test_ussd_states_for_session_1", function() {
         });
     });
 
+    var assert_single_sms = function(to_addr, content) {
+        var teardown = function(api) {
+            var sms = api.outbound_sends[0];
+            assert.equal(api.outbound_sends.length, 1);
+            assert.equal(sms.to_addr, to_addr);
+            assert.ok(sms.content.match(content));
+        };
+        return teardown;
+    };
+
     it("new users should see the language state", function () {
         tester.check_state(null, null, "language",
             "^Please select your language:[^]" +
@@ -240,6 +250,7 @@ describe("test_ussd_states_for_session_1", function() {
             }
         };
         tester.check_state(user_data, "eh?", "discovery_journey1",
-            "^Your story for today");
+            "^Your story for today", null,
+            assert_single_sms('1234567', '^In the beginning'));
     });
 });
