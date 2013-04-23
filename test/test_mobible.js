@@ -201,9 +201,9 @@ describe("test_ussd_states_for_session_1", function() {
             "4. Sotho$");
     });
 
-    it("returning users should see the discovery_journey", function() {
-        tester.check_state({current_state: "language"}, "2", "discovery_journey",
-            "^Ask everyone");
+    it("returning users should see the select_discovery_journey", function() {
+        tester.check_state({current_state: "language"}, "2", "select_discovery_journey",
+            "^Select your");
     });
 
     it("invalid languages should repeat the state", function() {
@@ -211,9 +211,14 @@ describe("test_ussd_states_for_session_1", function() {
             "^Please select your language");
     });
 
+    it("returning users should see thankfulness", function() {
+        tester.check_state({current_state: "select_discovery_journey"}, "1",
+            "thankfulness", "^Ask everyone");
+    });
+
     it("returning users should see the greatest_need", function() {
-        tester.check_state({current_state: "discovery_journey"}, "eh?", "greatest_need",
-            "^Ask everyone");
+        check_state({current_state: "thankfulness"}, "eh?", "greatest_need",
+            "^Ask everyone to share their");
     });
 
     it("returning users should see the prayer", function() {
