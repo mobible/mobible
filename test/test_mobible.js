@@ -222,7 +222,24 @@ describe("test_ussd_states_for_session_1", function() {
     });
 
     it("returning users should see the prayer", function() {
-        tester.check_state({current_state: "greatest_need"}, "eh?", "prayer",
+        var user_data = {
+            current_state: "greatest_need",
+            answers: {
+                "select_discovery_journey": "discovery_journey1"
+            }
+        };
+        tester.check_state(user_data, "eh?", "prayer",
             "^Please take a few");
+    });
+
+    it("Returning after prayer we should continue to the discover journey", function() {
+        var user_data = {
+            current_state: "prayer",
+            answers: {
+                "select_discovery_journey": "discovery_journey1"
+            }
+        };
+        tester.check_state(user_data, "eh?", "discovery_journey1",
+            "^Your story for today");
     });
 });
