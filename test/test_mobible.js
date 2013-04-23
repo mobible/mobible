@@ -251,7 +251,7 @@ describe("test_ussd_states_for_session_1", function() {
         };
         tester.check_state(user_data, "eh?", "discovery_journey1",
             "^Your story for today", null,
-            assert_single_sms('1234567', '^In the beginning'));
+            assert_single_sms('1234567', '^Genesis 1:1-25: In the beginning'));
     });
 
     it('returning users should discovery_journey1_obey', function() {
@@ -278,7 +278,7 @@ describe("test_ussd_states_for_session_1", function() {
             'shared',
             '^The SMS has been sent,',
             null,
-            assert_single_sms('27761234567', '^In the beginning')
+            assert_single_sms('27761234567', '^Genesis 1:1-25: In the beginning')
             );
     });
 
