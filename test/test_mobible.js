@@ -253,4 +253,37 @@ describe("test_ussd_states_for_session_1", function() {
             "^Your story for today", null,
             assert_single_sms('1234567', '^In the beginning'));
     });
+
+    it('returning users should discovery_journey1_obey', function() {
+        tester.check_state({current_state: 'discovery_journey1'}, 'eh?',
+            'discovery_journey1_obey', '^How will you obey this truth today\\?');
+    });
+
+    it('returning users should discovery_journey1_commit', function() {
+        tester.check_state({current_state: 'discovery_journey1_obey'}, 'eh?',
+            'discovery_journey1_commit', '^Consider 2 people');
+    });
+
+    it('replying yes to forwarding gives option to type numbers', function() {
+        tester.check_state({current_state: 'discovery_journey1_commit'}, '1',
+            'share_via_sms', '^Please type in the phone numbers');
+    });
+
+    it('should forward the story via SMS if asked to do so', function() {
+        var user_data = {
+            current_state: 'share_via_sms'
+        };
+        tester.check_state(user_data,
+            '27761234567',
+            'end',
+            '^Thanks for doing this DBS,',
+            null,
+            assert_single_sms('27761234567', '^In the beginning'));
+    });
+
+    it('replying no to forwarding closes the session', function() {
+        tester.check_state({current_state: 'discovery_journey1_commit'}, '2',
+            'end', '^Thanks for doing this DBS');
+    });
+
 });
