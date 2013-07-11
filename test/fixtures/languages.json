@@ -1,0 +1,39 @@
+{
+  "url": "http://dev.mobible.org/api/v1/language/",
+  "method": "GET",
+  "body": {
+    "meta": {
+      "limit": 20,
+      "next": null,
+      "offset": 0,
+      "previous": null,
+      "total_count": 4
+    },
+    "objects": [
+      {
+        "display_name": "English",
+        "id": 1,
+        "language_code": "en-us",
+        "resource_uri": "/api/v1/language/1/"
+      },
+      {
+        "display_name": "Afrikaans",
+        "id": 2,
+        "language_code": "af-za",
+        "resource_uri": "/api/v1/language/2/"
+      },
+      {
+        "display_name": "Xhosa",
+        "id": 3,
+        "language_code": "xh-za",
+        "resource_uri": "/api/v1/language/3/"
+      },
+      {
+        "display_name": "Sotho",
+        "id": 4,
+        "language_code": "st-za",
+        "resource_uri": "/api/v1/language/4/"
+      }
+    ]
+  }
+}
