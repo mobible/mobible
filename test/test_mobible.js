@@ -6,7 +6,8 @@ var vumigo = require("vumigo_v01");
 describe("Mobible", function() {
 
     var fixtures = [
-        'test/fixtures/languages.json'
+        'test/fixtures/languages.json',
+        'test/fixtures/introductions.json'
     ];
 
     var tester;
@@ -51,10 +52,12 @@ describe("Mobible", function() {
         }).then(done, done);
     });
 
-    describe('returning users', function(done) {
+    describe('returning users', function() {
         it("should see the select_discovery_journey", function(done) {
             tester.check_state({
-                user: {current_state: "language"},
+                user: {
+                    current_state: "language"
+                },
                 content: "2",
                 next_state: "select_discovery_journey",
                 response: "^Select your"
@@ -65,10 +68,12 @@ describe("Mobible", function() {
         });
     });
 
-    describe('new users', function(done) {
+    describe('new users', function() {
         it("should see the introduction end screen", function(done) {
             tester.check_state({
-                user: {current_state: "language"},
+                user: {
+                    current_state: "language"
+                },
                 content: "2",
                 next_state: "introduction",
                 response: "^Welcome to your first",
