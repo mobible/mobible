@@ -5,7 +5,9 @@ var vumigo = require("vumigo_v01");
 
 describe("test_ussd_states_for_session_1", function() {
 
-    var fixtures = [];
+    var fixtures = [
+        'test/fixtures/languages.json'
+    ];
 
     var tester = new vumigo.test_utils.ImTester(app.api, {
         custom_setup: function(api) {
@@ -15,7 +17,8 @@ describe("test_ussd_states_for_session_1", function() {
             fixtures.forEach(function (f) {
                 api.load_http_fixture(f);
             });
-        }
+        },
+        async: true
     });
 
     var assert_single_sms = function(to_addr, content) {
@@ -28,7 +31,7 @@ describe("test_ussd_states_for_session_1", function() {
         return teardown;
     };
 
-    it("new users should see the language state", function () {
+    it("new users should see the language state", function (done) {
         tester.check_state({
             user: null,
             content: null,
@@ -38,48 +41,51 @@ describe("test_ussd_states_for_session_1", function() {
                         "2. Afrikaans[^]" +
                         "3. Xhosa[^]" +
                         "4. Sotho$"
-        });
+        }).then(done, done);
     });
 
-    it("returning users should see the select_discovery_journey", function() {
+    it("returning users should see the select_discovery_journey", function(done) {
         tester.check_state({
             user: {current_state: "language"},
             content: "2",
             next_state: "select_discovery_journey",
             response: "^Select your"
-        });
+        }).then(function() {
+            var contact = app.api.find_contact('ussd', '+1234567');
+            assert.equal(contact['extras-mobible-language'], 'af-za');
+        }).then(done, done);
     });
 
-    it("invalid languages should repeat the state", function() {
+    it("invalid languages should repeat the state", function(done) {
         tester.check_state({
             user: {current_state: "language"},
             content: "500",
             next_state: "language",
             response: "^Please select your language"
-        });
+        }).then(done, done);
     });
 
-    it("returning users should see thankfulness", function() {
+    it("returning users should see thankfulness", function(done) {
         tester.check_state({
             user: {current_state: "select_discovery_journey"},
             content: "1",
             next_state: "thankfulness",
             response: "^Ask everyone",
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it("returning users should see the greatest_need", function() {
+    it("returning users should see the greatest_need", function(done) {
         tester.check_state({
             user: {current_state: "thankfulness"},
             content: "eh?",
             next_state: "greatest_need",
             response: "^Ask everyone to share their",
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it("returning users should see the prayer", function() {
+    it("returning users should see the prayer", function(done) {
         var user_data = {
             current_state: "greatest_need",
             answers: {
@@ -92,10 +98,10 @@ describe("test_ussd_states_for_session_1", function() {
             next_state: "prayer",
             response: "^Please take a few",
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it("Returning after prayer we should continue to the discover journey", function() {
+    it("Returning after prayer we should continue to the discover journey", function(done) {
         var user_data = {
             current_state: "prayer",
             answers: {
@@ -109,38 +115,38 @@ describe("test_ussd_states_for_session_1", function() {
             response: "^Your story for today",
             teardown: assert_single_sms('1234567', '^Genesis 1:1-25: In the beginning'),
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it('returning users should discovery_journey1_obey', function() {
+    it('returning users should discovery_journey1_obey', function(done) {
         tester.check_state({
             user: {current_state: 'discovery_journey1'},
             content: 'eh?',
             next_state: 'discovery_journey1_obey',
             response: '^How will you obey this truth today\\?',
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it('returning users should discovery_journey1_commit', function() {
+    it('returning users should discovery_journey1_commit', function(done) {
         tester.check_state({
             user: {current_state: 'discovery_journey1_obey'},
             content: 'eh?',
             next_state: 'discovery_journey1_commit',
             response: '^Consider 2 people'
-        });
+        }).then(done, done);
     });
 
-    it('replying yes to forwarding gives option to type numbers', function() {
+    it('replying yes to forwarding gives option to type numbers', function(done) {
         tester.check_state({
             user: {current_state: 'discovery_journey1_commit'},
             content: '1',
             next_state: 'share_via_sms',
             response: '^Please type in the phone number'
-        });
+        }).then(done, done);
     });
 
-    it('should forward the story via SMS if asked to do so', function() {
+    it('should forward the story via SMS if asked to do so', function(done) {
         var user_data = {
             current_state: 'share_via_sms'
         };
@@ -150,10 +156,10 @@ describe("test_ussd_states_for_session_1", function() {
             next_state: 'shared',
             response: '^The SMS has been sent,',
             teardown: assert_single_sms('27761234567', '^Genesis 1:1-25: In the beginning')
-        });
+        }).then(done, done);
     });
 
-    it('should end when done with sharing', function() {
+    it('should end when done with sharing', function(done) {
         var user_data = {
             current_state: 'shared'
         };
@@ -163,17 +169,17 @@ describe("test_ussd_states_for_session_1", function() {
             next_state: 'end',
             response: '^Thanks for doing this DBS,',
             continue_session: false
-        });
+        }).then(done, done);
     });
 
-    it('replying no to forwarding closes the session', function() {
+    it('replying no to forwarding closes the session', function(done) {
         tester.check_state({
             user: {current_state: 'discovery_journey1_commit'},
             content: '2',
             next_state: 'end',
             response: '^Thanks for doing this DBS',
             continue_session: false
-        });
+        }).then(done, done);
     });
 
 });
