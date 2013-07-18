@@ -3,22 +3,29 @@ var assert = require("assert");
 var app = require("../lib/mobible");
 var vumigo = require("vumigo_v01");
 
-describe("test_ussd_states_for_session_1", function() {
+describe("Mobible", function() {
 
     var fixtures = [
         'test/fixtures/languages.json'
     ];
 
-    var tester = new vumigo.test_utils.ImTester(app.api, {
-        custom_setup: function(api) {
-            api.config_store.config = JSON.stringify({
-                sms_tag: ['pool', 'addr']
-            });
-            fixtures.forEach(function (f) {
-                api.load_http_fixture(f);
-            });
-        },
-        async: true
+    var tester;
+
+    beforeEach(function() {
+        tester = new vumigo.test_utils.ImTester(app.api, {
+            custom_setup: function(api) {
+                api.config_store.config = JSON.stringify({
+                    sms_tag: ['pool', 'addr']
+                });
+                api.add_contact({
+                    'msisdn': '+1234567'
+                });
+                fixtures.forEach(function (f) {
+                    api.load_http_fixture(f);
+                });
+            },
+            async: true
+        });
     });
 
     var assert_single_sms = function(to_addr, content) {
@@ -31,7 +38,7 @@ describe("test_ussd_states_for_session_1", function() {
         return teardown;
     };
 
-    it("new users should see the language state", function (done) {
+    it("users should see the language state", function (done) {
         tester.check_state({
             user: null,
             content: null,
@@ -44,16 +51,34 @@ describe("test_ussd_states_for_session_1", function() {
         }).then(done, done);
     });
 
-    it("returning users should see the select_discovery_journey", function(done) {
-        tester.check_state({
-            user: {current_state: "language"},
-            content: "2",
-            next_state: "select_discovery_journey",
-            response: "^Select your"
-        }).then(function() {
-            var contact = app.api.find_contact('ussd', '+1234567');
-            assert.equal(contact['extras-mobible-language'], 'af-za');
-        }).then(done, done);
+    describe('returning users', function(done) {
+        it("should see the select_discovery_journey", function(done) {
+            tester.check_state({
+                user: {current_state: "language"},
+                content: "2",
+                next_state: "select_discovery_journey",
+                response: "^Select your"
+            }).then(function() {
+                var contact = app.api.find_contact('ussd', '+1234567');
+                assert.equal(contact['extras-mobible-language'], 'af-za');
+            }).then(done, done);
+        });
+    });
+
+    describe('new users', function(done) {
+        it("should see the introduction end screen", function(done) {
+            tester.check_state({
+                user: {current_state: "language"},
+                content: "2",
+                next_state: "introduction",
+                response: "^Welcome to your first",
+                from_addr: '1000',
+                continue_session: false
+            }).then(function() {
+                var contact = app.api.find_contact('ussd', '+1000');
+                assert.equal(contact['extras-mobible-language'], 'af-za');
+            }).then(done, done);
+        });
     });
 
     it("invalid languages should repeat the state", function(done) {
