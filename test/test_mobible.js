@@ -50,6 +50,9 @@ describe("test_ussd_states_for_session_1", function() {
             content: "2",
             next_state: "select_discovery_journey",
             response: "^Select your"
+        }).then(function() {
+            var contact = app.api.find_contact('ussd', '+1234567');
+            assert.equal(contact['extras-mobible-language'], 'af-za');
         }).then(done, done);
     });
 
