@@ -19,7 +19,8 @@ describe("Mobible", function() {
                     sms_tag: ['pool', 'addr']
                 });
                 api.add_contact({
-                    'msisdn': '+1234567'
+                    'msisdn': '+1234567',
+                    'extras-mobible-join': new Date().toISOString()
                 });
                 fixtures.forEach(function (f) {
                     api.load_http_fixture(f);
