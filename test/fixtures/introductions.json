@@ -1,0 +1,39 @@
+{
+  "url": "http://dev.mobible.org/api/v1/introduction/",
+  "method": "GET",
+  "body": {
+    "meta": {
+      "limit": 20,
+      "next": null,
+      "offset": 0,
+      "previous": null,
+      "total_count": 4
+    },
+    "objects": [
+      {
+        "text": "English introduction",
+        "id": 1,
+        "language_code": "en-us",
+        "resource_uri": "/api/v1/introduction/1/"
+      },
+      {
+        "text": "Afrikaans introduction",
+        "id": 2,
+        "language_code": "af-za",
+        "resource_uri": "/api/v1/introduction/2/"
+      },
+      {
+        "text": "Xhosa introduction",
+        "id": 3,
+        "language_code": "xh-za",
+        "resource_uri": "/api/v1/introduction/3/"
+      },
+      {
+        "text": "Sotho introduction",
+        "id": 4,
+        "language_code": "st-za",
+        "resource_uri": "/api/v1/introduction/4/"
+      }
+    ]
+  }
+}
