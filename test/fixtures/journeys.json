@@ -1,0 +1,67 @@
+{
+  "url": "http://dev.mobible.org/api/v1/journey/",
+  "method": "GET",
+  "body": {
+    "meta": {
+      "limit": 20,
+      "next": null,
+      "offset": 0,
+      "previous": null,
+      "total_count": 2
+    },
+    "objects": [
+      {
+        "created_at": "2013-07-30T06:37:15.548894",
+        "id": 1,
+        "language": {
+          "display_name": "English",
+          "id": 1,
+          "language_code": "en-us",
+          "resource_uri": "/api/v1/language/1/"
+        },
+        "resource_uri": "/api/v1/journey/1/",
+        "title": "Journey 1",
+        "updated_at": "2013-07-30T06:37:15.548934"
+      },
+      {
+        "created_at": "2013-07-30T06:37:15.548894",
+        "id": 2,
+        "language": {
+          "display_name": "English",
+          "id": 1,
+          "language_code": "en-us",
+          "resource_uri": "/api/v1/language/1/"
+        },
+        "resource_uri": "/api/v1/journey/2/",
+        "title": "Journey 2",
+        "updated_at": "2013-07-30T06:37:15.548934"
+      },
+      {
+        "created_at": "2013-07-30T06:37:15.548894",
+        "id": 3,
+        "language": {
+          "display_name": "English",
+          "id": 1,
+          "language_code": "en-us",
+          "resource_uri": "/api/v1/language/1/"
+        },
+        "resource_uri": "/api/v1/journey/3/",
+        "title": "Journey 3",
+        "updated_at": "2013-07-30T06:37:15.548934"
+      },
+      {
+        "created_at": "2013-07-30T06:37:15.548894",
+        "id": 4,
+        "language": {
+          "display_name": "English",
+          "id": 1,
+          "language_code": "en-us",
+          "resource_uri": "/api/v1/language/1/"
+        },
+        "resource_uri": "/api/v1/journey/4/",
+        "title": "Journey 4",
+        "updated_at": "2013-07-30T06:37:15.548934"
+      }
+    ]
+  }
+}

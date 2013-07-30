@@ -7,7 +7,8 @@ describe("Mobible", function() {
 
     var fixtures = [
         'test/fixtures/languages.json',
-        'test/fixtures/introductions.json'
+        'test/fixtures/introductions.json',
+        'test/fixtures/journeys.json'
     ];
 
     var tester;
@@ -98,7 +99,12 @@ describe("Mobible", function() {
 
     it("returning users should see thankfulness", function(done) {
         tester.check_state({
-            user: {current_state: "select_discovery_journey"},
+            user: {
+                current_state: "select_discovery_journey",
+                answers: {
+                    language: 'en-us'
+                }
+            },
             content: "1",
             next_state: "thankfulness",
             response: "^Ask everyone",
