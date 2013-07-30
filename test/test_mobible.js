@@ -60,12 +60,16 @@ describe("Mobible", function() {
                 user: {
                     current_state: "language"
                 },
-                content: "2",
+                content: "1",
                 next_state: "select_discovery_journey",
-                response: "^Select your"
+                response: "^Select your discovery journey:[^]" +
+                            "1. Journey 1[^]" +
+                            "2. Journey 2[^]" +
+                            "3. Journey 3[^]" +
+                            "4. Journey 4$"
             }).then(function() {
                 var contact = app.api.find_contact('ussd', '+1234567');
-                assert.equal(contact['extras-mobible-language'], 'af-za');
+                assert.equal(contact['extras-mobible-language'], 'en-us');
             }).then(done, done);
         });
     });
