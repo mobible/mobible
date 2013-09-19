@@ -110,7 +110,7 @@ describe("Mobible", function() {
                 }
             },
             content: "1",
-            next_state: "thankfulness",
+            next_state: "check_obey",
             response: "^Ask everyone",
             continue_session: false
         }).then(done, done);
