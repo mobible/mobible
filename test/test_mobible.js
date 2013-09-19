@@ -8,7 +8,8 @@ describe("Mobible", function() {
     var fixtures = [
         'test/fixtures/languages.json',
         'test/fixtures/introductions.json',
-        'test/fixtures/journeys.json'
+        'test/fixtures/journeys.json',
+        'test/fixtures/verses.json'
     ];
 
     var tester;
@@ -31,14 +32,19 @@ describe("Mobible", function() {
         });
     });
 
-    var assert_single_sms = function(to_addr, content) {
+    var assert_smss = function(to_addr, messages) {
         var teardown = function(api) {
-            var sms = api.outbound_sends[0];
-            assert.equal(api.outbound_sends.length, 1);
-            assert.equal(sms.to_addr, to_addr);
-            assert.ok(sms.content.match(content));
-        };
+            assert.equal(api.outbound_sends.length, messages.length);
+            api.outbound_sends.forEach(function(sms, index) {
+                assert.equal(sms.to_addr, to_addr);
+                assert.ok(sms.content.match(messages[index]));
+            });
+        }
         return teardown;
+    };
+
+    var assert_single_sms = function(to_addr, content) {
+        return assert_smss(to_addr, [content]);
     };
 
     it("users should see the language state", function (done) {
@@ -152,31 +158,31 @@ describe("Mobible", function() {
         tester.check_state({
             user: user_data,
             content: "eh?",
-            next_state: "discovery_journey1",
-            response: "^Your story for today",
-            teardown: assert_single_sms('1234567', '^Genesis 1:1-25: In the beginning'),
+            next_state: "todays_story_intro",
+            response: "^Your story today",
+            teardown: assert_smss('1234567', ['^Study 1', '^While Jesus was']),
             continue_session: false
         }).then(done, done);
     });
 
-    it('returning users should discovery_journey1_obey', function(done) {
-        tester.check_state({
-            user: {current_state: 'discovery_journey1'},
-            content: 'eh?',
-            next_state: 'discovery_journey1_obey',
-            response: '^How will you obey this truth today\\?',
-            continue_session: false
-        }).then(done, done);
-    });
+    // it('returning users should discovery_journey1_obey', function(done) {
+    //     tester.check_state({
+    //         user: {current_state: 'discovery_journey1'},
+    //         content: 'eh?',
+    //         next_state: 'discovery_journey1_obey',
+    //         response: '^How will you obey this truth today\\?',
+    //         continue_session: false
+    //     }).then(done, done);
+    // });
 
-    it('returning users should discovery_journey1_commit', function(done) {
-        tester.check_state({
-            user: {current_state: 'discovery_journey1_obey'},
-            content: 'eh?',
-            next_state: 'discovery_journey1_commit',
-            response: '^Consider 2 people'
-        }).then(done, done);
-    });
+    // it('returning users should discovery_journey1_commit', function(done) {
+    //     tester.check_state({
+    //         user: {current_state: 'discovery_journey1_obey'},
+    //         content: 'eh?',
+    //         next_state: 'discovery_journey1_commit',
+    //         response: '^Consider 2 people'
+    //     }).then(done, done);
+    // });
 
     it('replying yes to forwarding gives option to type numbers', function(done) {
         tester.check_state({

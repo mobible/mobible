@@ -1,0 +1,37 @@
+{
+  "url": "http://dev.mobible.org/api/v1/verse/?journey=discovery_journey1",
+  "method": "GET",
+  "body": {
+    "meta": {
+      "limit": 20,
+      "next": null,
+      "offset": 0,
+      "previous": null,
+      "total_count": 6
+    },
+    "objects": [
+      {
+        "context": "Study 1: (Matthew 26:26-30 Paraphrased The Meal with Jesus)",
+        "created_at": "2013-07-22T12:31:19.084982",
+        "id": 23,
+        "index": 1,
+        "journey": {
+          "created_at": "2013-07-22T12:31:19.081690",
+          "id": 6,
+          "language": {
+            "display_name": "English",
+            "id": 1,
+            "language_code": "en-us",
+            "resource_uri": "/api/v1/language/1/"
+          },
+          "resource_uri": "/api/v1/journey/6/",
+          "title": "Death, Resurrection and Commissioning of Jesus",
+          "updated_at": "2013-07-22T12:31:19.081731"
+        },
+        "resource_uri": "/api/v1/verse/23/",
+        "updated_at": "2013-07-22T12:31:19.085016",
+        "verse": "While Jesus was eating with his disciples, Jesus took a piece of bread, gave a prayer of thanks, broke it in pieces, and gave it to his disciples. â€œTake and eat it,â€ he said; â€œthis is my body.â€  Then he took a cup, gave thanks to God, and gave it to them. â€œDrink it, all of you,â€ he said; â€œthis is my blood, which seals God's covenant, my blood poured out for many for the forgiveness of sins.  I tell you, I will never again drink this wine until the day I drink the new wine with you in my Father's Kingdom.â€  Then they sang a hymn and went out to the Mount of Olives."
+      }
+    ]
+  }
+}
