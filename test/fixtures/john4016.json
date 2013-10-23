@@ -1,0 +1,21 @@
+{
+  "url": "https://bibles.org/v2/eng-ESV/passages.js?q[]=john%2040:16",
+  "method": "GET",
+  "body": {
+    "response": {
+      "search": {
+        "result": {
+          "type": "passages",
+          "passages": []
+        }
+      },
+      "meta": {
+        "fums": "<script>\nvar _BAPI=_BAPI||{};\nif(typeof(_BAPI.t)==='undefined'){\ndocument.write('\\x3Cscript src=\"'+document.location.protocol+'//d2ue49q0mum86x.cloudfront.net/include/fums.c.js\"\\x3E\\x3C/script\\x3E');}\ndocument.write(\"\\x3Cscript\\x3E_BAPI.t('5267ab02c63d49.27454652');\\x3C/script\\x3E\");\n</script><noscript><img src=\"https://d3a2okcloueqyx.cloudfront.net/nf1?t=5267ab02c63d49.27454652\" height=\"1\" width=\"1\" border=\"0\" alt=\"\" style=\"height: 0; width: 0;\" /></noscript>",
+        "fums_tid": "5267ab02c63d49.27454652",
+        "fums_js_include": "d2ue49q0mum86x.cloudfront.net/include/fums.c.js",
+        "fums_js": "var _BAPI=_BAPI||{};if(typeof(_BAPI.t)!='undefined'){ _BAPI.t('5267ab02c63d49.27454652'); }",
+        "fums_noscript": "<img src=\"https://d3a2okcloueqyx.cloudfront.net/nf1?t=5267ab02c63d49.27454652\" height=\"1\" width=\"1\" border=\"0\" alt=\"\" style=\"height: 0; width: 0;\" />"
+      }
+    }
+  }
+}
