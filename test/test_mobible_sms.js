@@ -7,6 +7,35 @@ var assert = require("assert");
 var app = require("../lib/mobible_sms");
 var vumigo = require("vumigo_v01");
 
+
+var make_api_endpoint_aware = function(api) {
+
+  if(api.is_endpoint_aware) {
+    return api;
+  }
+
+  // Hot wire endpoint support for the testing harnass
+  api.set_configured_endpoint = function (endpoint) {
+    api._configured_endpoint = endpoint;
+  };
+
+  api.get_configured_endpoint = function () {
+    return api._configured_endpoint || 'default';
+  };
+
+  var original_on_inbound_message = api.on_inbound_message;
+  api.on_inbound_message = function(cmd) {
+    cmd.msg.routing_metadata = {
+      endpoint: api.get_configured_endpoint()
+    };
+    return original_on_inbound_message(cmd);
+  };
+
+  api.is_endpoint_aware = true;
+
+  return api;
+};
+
 describe("Mobible SMS", function () {
 
   var fixtures = [
@@ -26,6 +55,11 @@ describe("Mobible SMS", function () {
                  "'John 3', 'John 3-5', 'John 3:12', 'John 3:12-15', " +
                  "'John 3,Luke 2'")
         });
+
+        if (!api.is_endpoint_aware) {
+          make_api_endpoint_aware(api);
+        }
+        api.set_configured_endpoint('longcode:default10235');
 
         fixtures.forEach(function (f) {
           api.load_http_fixture(f);
