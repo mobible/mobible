@@ -139,7 +139,7 @@ describe('Mobible SMS Menu', function () {
         var contact2 = api.add_contact({msisdn: '+2222'});
 
         api.set_contact_search_results('groups:' + group.key, [
-          contact1, contact2]);
+          contact1.key, contact2.key]);
 
         fixtures.forEach(function (f) {
           api.load_http_fixture(f);
