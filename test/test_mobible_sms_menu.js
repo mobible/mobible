@@ -98,7 +98,7 @@ describe('Mobible SMS Menu', function () {
             'add_friend_name': 'foo'
           }
         },
-        content: '1234',
+        content: '0761234567',
         next_state: 'end',
         response: '^Thanks!',
         continue_session: false
@@ -111,7 +111,7 @@ describe('Mobible SMS Menu', function () {
         assert.equal(group.name, 'Mobible group for 1234567');
 
         // assert contact created
-        var contact = app.api.find_contact('ussd', '1234');
+        var contact = app.api.find_contact('ussd', '+27761234567');
         assert.equal(contact.groups.length, 1);
         assert.equal(contact.groups[0], group.key);
 
