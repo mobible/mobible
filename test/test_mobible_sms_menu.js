@@ -67,6 +67,46 @@ describe('Mobible SMS Menu', function () {
     }).then(done, done);
   });
 
+  it('should allow for setting the name', function (done) {
+    tester.check_state({
+      user: {
+        current_state: 'start'
+      },
+      content: '4',
+      next_state: 'name',
+      response: '^What\'s your name\?'
+    }).then(done, done);
+  });
+
+  it('should allow for setting the surname', function (done) {
+    tester.check_state({
+      user: {
+        current_state: 'name',
+      },
+      content: 'Foo',
+      next_state: 'surname',
+      response: '^What\'s your surname\?'
+    }).then(done, done);
+  });
+
+  it('should save the name & surname', function (done) {
+    tester.check_state({
+      user: {
+        current_state: 'surname',
+        answers: {
+          name: 'Foo'
+        }
+      },
+      content: 'Bar',
+      next_state: 'save_settings',
+      response: '^Thanks! Your settings have been saved.'
+    }).then(function () {
+      var contact = app.api.find_contact('ussd', '+1234567');
+      assert.equal(contact.name, 'Foo');
+      assert.equal(contact.surname, 'Bar');
+    }).then(done, done);
+  });
+
   describe('when adding friends', function () {
     it('should ask for the name when adding a friend to a group.', function (done) {
       tester.check_state({
@@ -117,9 +157,59 @@ describe('Mobible SMS Menu', function () {
 
       }).then(done, done);
     });
+
+    it('should suggest account creation before sharing verses', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'start'
+        },
+        next_state: 'share_verse',
+        content: '2',
+        response: '^You need to create an account'
+      }).then(done, done);
+    });
   });
 
   describe('when sharing a verse', function () {
+
+    beforeEach(function () {
+      tester = new vumigo.test_utils.ImTester(app.api, {
+        custom_setup: function (api) {
+          api.config_store.config = JSON.stringify({
+            sms_tag: ['foo', 'bar'],
+            version: 'eng-ESV',
+            token: 'foo',
+            help: ("Sorry, no verse found. Please try the following formats. " +
+                   "'John 3', 'John 3-5', 'John 3:12', 'John 3:12-15', " +
+                   "'John 3,Luke 2'"),
+            instructions: 'the instructions'
+          });
+
+          var group = api.add_group({
+            'name': 'Mobible group for 1234567'
+          });
+
+          // this fakes the user having created an account.
+          api.add_contact({
+            msisdn: '+1234567',
+            name: 'Foo',
+            surname: 'Bar'
+          });
+
+          var contact1 = api.add_contact({msisdn: '+1111'});
+          var contact2 = api.add_contact({msisdn: '+2222'});
+
+          api.set_contact_search_results('groups:' + group.key, [
+            contact1.key, contact2.key]);
+
+          fixtures.forEach(function (f) {
+            api.load_http_fixture(f);
+          });
+        },
+        async: true
+      });
+    });
+
     it('should ask for a verse reference', function (done) {
       tester.check_state({
         user: {
@@ -157,8 +247,14 @@ describe('Mobible SMS Menu', function () {
         continue_session: false
       }).then(function() {
         assert_sms_outbox(app.api, [
-          {to_addr: '+1111', content: /16\. Jesus said to her/},
-          {to_addr: '+2222', content: /16\. Jesus said to her/}
+          {
+            to_addr: '+1111',
+            content: /Your friend Foo has shared john 4:16 with you: 16\. Jesus said to her/
+          },
+          {
+            to_addr: '+2222',
+            content: /Your friend Foo has shared john 4:16 with you: 16\. Jesus said to her/
+          }
         ]);
       }).then(done, done);
     });
