@@ -311,6 +311,9 @@ describe('Mobible SMS Menu', function () {
 
   describe('when managing groups', function() {
 
+    var tester;
+    var group;
+
     beforeEach(function () {
       tester = new vumigo.test_utils.ImTester(app.api, {
         custom_setup: function (api) {
@@ -324,7 +327,8 @@ describe('Mobible SMS Menu', function () {
             instructions: 'the instructions'
           });
 
-          var group = api.add_group({
+          group = api.add_group({
+            'key': 'some-group',
             'name': 'Mobible group for 00000000'
           });
 
@@ -366,6 +370,36 @@ describe('Mobible SMS Menu', function () {
         response: (
           '^Manage group:[^]' +
           '1. Some Person\'s group')
+      }).then(done, done);
+    });
+
+    it('should give the option for unsubscribing', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'manage_group'
+        },
+        content: '1',
+        next_state: 'manage_single_group',
+        response: '^What would you like to do\?'
+      }).then(done, done);
+    });
+
+    it('should allow unsubscribing', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'manage_single_group',
+          answers: {
+            'manage_group': 'some-group'
+          }
+        },
+        content: '1',
+        next_state: 'unsubscribe_group',
+        response: '^You\'ve unsubscribed from the group'
+      }).then(function() {
+        var contact = app.api.find_contact('ussd', '+1234567');
+        assert.equal(contact.name, 'Foo');
+        assert.equal(contact.surname, 'Bar');
+        assert.equal(contact.groups.length, 0);
       }).then(done, done);
     });
   });
