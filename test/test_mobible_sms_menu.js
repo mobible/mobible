@@ -308,4 +308,99 @@ describe('Mobible SMS Menu', function () {
       ]);
     }).then(done, done);
   });
+
+  describe('when managing groups', function() {
+
+    var tester;
+    var group;
+
+    beforeEach(function () {
+      tester = new vumigo.test_utils.ImTester(app.api, {
+        custom_setup: function (api) {
+          api.config_store.config = JSON.stringify({
+            sms_tag: ['foo', 'bar'],
+            version: 'eng-ESV',
+            token: 'foo',
+            help: ("Sorry, no verse found. Please try the following formats. " +
+                   "'John 3', 'John 3-5', 'John 3:12', 'John 3:12-15', " +
+                   "'John 3,Luke 2'"),
+            instructions: 'the instructions'
+          });
+
+          group = api.add_group({
+            'key': 'some-group',
+            'name': 'Mobible group for 00000000'
+          });
+
+          api.add_contact({
+            msisdn: '+00000000',
+            name: 'Some',
+            surname: 'Person'
+          });
+
+          // this fakes the user having created an account.
+          api.add_contact({
+            msisdn: '+1234567',
+            name: 'Foo',
+            surname: 'Bar',
+            groups: [group.key]
+          });
+
+          var contact1 = api.add_contact({msisdn: '+1111'});
+          var contact2 = api.add_contact({msisdn: '+2222'});
+
+          api.set_contact_search_results('groups:' + group.key, [
+            contact1.key, contact2.key]);
+
+          fixtures.forEach(function (f) {
+            api.load_http_fixture(f);
+          });
+        },
+        async: true
+      });
+    });
+
+    it('should list groups the current user is subscribed to', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'start'
+        },
+        content: '5',
+        next_state: 'manage_group',
+        response: (
+          '^Manage group:[^]' +
+          '1. Some Person\'s group')
+      }).then(done, done);
+    });
+
+    it('should give the option for unsubscribing', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'manage_group'
+        },
+        content: '1',
+        next_state: 'manage_single_group',
+        response: '^What would you like to do\?'
+      }).then(done, done);
+    });
+
+    it('should allow unsubscribing', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'manage_single_group',
+          answers: {
+            'manage_group': 'some-group'
+          }
+        },
+        content: '1',
+        next_state: 'unsubscribe_group',
+        response: '^You\'ve unsubscribed from the group'
+      }).then(function() {
+        var contact = app.api.find_contact('ussd', '+1234567');
+        assert.equal(contact.name, 'Foo');
+        assert.equal(contact.surname, 'Bar');
+        assert.equal(contact.groups.length, 0);
+      }).then(done, done);
+    });
+  });
 });
