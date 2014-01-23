@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/gsvr/mobible"
+    "url": "git://github.com/mobible/mobible"
   },
   "keywords": [
     "vumi",
     "ussd",
     "mobible"
   ],
-  "author": "George van Rooyen <gsvrooyen@gmail.com>",
+  "author": "Team Mobible <dev@mobible.org>",
   "license": "BSD",
   "readmeFilename": "README.rst"
 }
