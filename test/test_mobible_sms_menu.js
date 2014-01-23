@@ -402,5 +402,32 @@ describe('Mobible SMS Menu', function () {
         assert.equal(contact.groups.length, 0);
       }).then(done, done);
     });
+
+    it('should allow returning to main menu if not member of any group.', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'start'
+        },
+        from_addr: '27761234567',
+        content: '5',
+        next_state: 'manage_group',
+        response: (
+          '^You\'re not part of any groups.[^]' +
+          '1. Go back to the start menu.$')
+      }).then(done, done);
+    });
+
+    it('should return to the main menu if there are no groups.', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'manage_group'
+        },
+        from_addr: '27761234567',
+        content: '1',
+        next_state: 'start',
+        response: '^Welcome to Mobible!'
+      }).then(done, done);
+    });
+
   });
 });
