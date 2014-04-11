@@ -250,8 +250,8 @@ describe('Mobible SMS Menu', function () {
         },
         content: 'john 4:16',
         next_state: 'confirm_verse',
-        response: ('^john 4:16 starts with \'Jesus said to her, "Go, call ' +
-                   'your husband, and come here...\'')
+        response: ('^john 4:16 starts \'Jesus said to her, "Go, call ' +
+                   'your husband, an...\'')
       }).then(done, done);
     });
 
