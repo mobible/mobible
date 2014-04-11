@@ -187,7 +187,7 @@ describe('Mobible SMS Menu', function () {
         },
         next_state: 'share_verse',
         content: '3',
-        response: '^You need to create an account'
+        response: '^You need to sign up for Mobible'
       }).then(done, done);
     });
   });
