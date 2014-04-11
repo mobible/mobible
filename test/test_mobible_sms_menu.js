@@ -63,7 +63,7 @@ describe('Mobible SMS Menu', function () {
       user: null,
       content: null,
       next_state: 'start',
-      response: '^Welcome to Mobible!'
+      response: '^WELCOME TO MOBIBLE!'
     }).then(done, done);
   });
 
@@ -139,9 +139,8 @@ describe('Mobible SMS Menu', function () {
           }
         },
         content: '0761234567',
-        next_state: 'end',
-        response: '^Thanks!',
-        continue_session: false
+        next_state: 'add_another_friend',
+        response: '^Do you want to add another friend\?'
       }).then(function() {
         var group_keys = Object.keys(app.api.group_store);
 
@@ -155,6 +154,29 @@ describe('Mobible SMS Menu', function () {
         assert.equal(contact.groups.length, 1);
         assert.equal(contact.groups[0], group.key);
 
+      }).then(done, done);
+    });
+
+    it('should allow for adding another friend', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'add_another_friend'
+        },
+        content: '1',
+        next_state: 'add_friend_name',
+        response: '^What is your friend\'s name\?'
+      }).then(done, done);
+    });
+
+    it('should allow for not adding another friend', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'add_another_friend'
+        },
+        content: '2',
+        next_state: 'end',
+        response: '^You have added your friend!',
+        continue_session: false
       }).then(done, done);
     });
 
@@ -427,7 +449,7 @@ describe('Mobible SMS Menu', function () {
         from_addr: '27761234567',
         content: '1',
         next_state: 'start',
-        response: '^Welcome to Mobible!'
+        response: '^WELCOME TO MOBIBLE!'
       }).then(done, done);
     });
 
