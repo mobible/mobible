@@ -72,7 +72,7 @@ describe('Mobible SMS Menu', function () {
       user: {
         current_state: 'start'
       },
-      content: '4',
+      content: '1',
       next_state: 'name',
       response: '^What\'s your name\?'
     }).then(done, done);
@@ -113,7 +113,7 @@ describe('Mobible SMS Menu', function () {
         user: {
           current_state: 'start'
         },
-        content: '1',
+        content: '2',
         next_state: 'add_friend_name',
         response: '^What is your friend\'s name\?'
       }).then(done, done);
@@ -164,7 +164,7 @@ describe('Mobible SMS Menu', function () {
           current_state: 'start'
         },
         next_state: 'share_verse',
-        content: '2',
+        content: '3',
         response: '^You need to create an account'
       }).then(done, done);
     });
@@ -298,7 +298,7 @@ describe('Mobible SMS Menu', function () {
       user: {
         current_state: 'start'
       },
-      content: '3',
+      content: '4',
       next_state: 'receive_instructions',
       response: 'Instructions sent via SMS!',
       continue_session: false
@@ -361,11 +361,13 @@ describe('Mobible SMS Menu', function () {
     });
 
     it('should list groups the current user is subscribed to', function (done) {
+      // subscriber here is registered so we're not showing the
+      // Create Account! menu item which means manage_group is item 4.
       tester.check_state({
         user: {
           current_state: 'start'
         },
-        content: '5',
+        content: '4',
         next_state: 'manage_group',
         response: (
           '^Manage group:[^]' +
