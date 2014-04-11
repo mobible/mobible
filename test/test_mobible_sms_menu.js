@@ -270,6 +270,10 @@ describe('Mobible SMS Menu', function () {
       }).then(function() {
         assert_sms_outbox(app.api, [
           {
+            to_addr: '1234567',
+            content: /16. Jesus said to her/
+          },
+          {
             to_addr: '+1111',
             content: /Your friend Foo has shared john 4:16 with you: 16\. Jesus said to her/
           },
